@@ -17,13 +17,15 @@ def test_dependencies():
     
     print("\nTesting basic functionality...")
     try:
-        # Test URL request
-        response = requests.get("https://www.python.org")
-        print("✓ HTTP requests working")
-        
-        # Test BeautifulSoup
-        soup = bs4.BeautifulSoup(response.text, 'lxml')
+        # Test BeautifulSoup with sample HTML
+        sample_html = "<html><body><h1>Test</h1><img src='test.jpg'></body></html>"
+        soup = bs4.BeautifulSoup(sample_html, 'lxml')
         print("✓ HTML parsing working")
+        
+        # Verify we can find elements
+        assert soup.find('h1') is not None
+        assert soup.find('img') is not None
+        print("✓ Element finding working")
         
         # Test logging
         logging.basicConfig(level=logging.INFO)

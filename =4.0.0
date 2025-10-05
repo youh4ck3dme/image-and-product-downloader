@@ -1,5 +1,0 @@
-Collecting lxml
-  Using cached lxml-5.4.0-cp310-cp310-manylinux_2_28_x86_64.whl.metadata (3.5 kB)
-Using cached lxml-5.4.0-cp310-cp310-manylinux_2_28_x86_64.whl (5.1 MB)
-Installing collected packages: lxml
-Successfully installed lxml-5.4.0
