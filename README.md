@@ -31,16 +31,31 @@ pip install -r requirements.txt
 from downloader import ImageDownloader
 
 # Initialize downloader
-downloader = ImageDownloader()
+downloader = ImageDownloader(output_dir="downloads")
 
 # Download images from a URL
-downloader.download_images("https://example.com", output_dir="downloads")
+downloader.download_images("https://example.com")
 ```
 
 ### Command Line Usage
 
 ```bash
-python downloader.py --url "https://example.com" --output downloads/
+# Download images only
+python downloader.py --url "https://example.com" --mode images
+
+# Extract products only
+python downloader.py --url "https://example.com" --mode products
+
+# Download images and extract products
+python downloader.py --url "https://example.com" --mode both --output downloads/
+```
+
+### Examples
+
+For more detailed examples, see `example_usage.py`:
+
+```bash
+python example_usage.py
 ```
 
 ## Requirements
@@ -63,8 +78,11 @@ python test_installation.py
 ```
 image-and-product-downloader/
 ├── downloader.py          # Main downloader module
+├── example_usage.py       # Usage examples
 ├── test_installation.py   # Dependency verification
+├── test_downloader.py     # Unit tests
 ├── requirements.txt       # Project dependencies
+├── .gitignore            # Git ignore rules
 └── README.md             # This file
 ```
 
