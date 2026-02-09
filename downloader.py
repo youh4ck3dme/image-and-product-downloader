@@ -6,7 +6,9 @@ A utility for downloading images and extracting product information from website
 """
 
 import os
+import re
 import sys
+import hashlib
 import argparse
 import logging
 from urllib.parse import urljoin, urlparse
@@ -14,6 +16,46 @@ from pathlib import Path
 
 import requests
 from bs4 import BeautifulSoup
+
+
+ALLOWED_SCHEMES = {'http', 'https'}
+
+
+def _validate_url(url):
+    """
+    Validate that a URL uses an allowed scheme (http/https).
+
+    Args:
+        url: The URL to validate
+
+    Raises:
+        ValueError: If the URL scheme is not allowed
+    """
+    parsed = urlparse(url)
+    if parsed.scheme not in ALLOWED_SCHEMES:
+        raise ValueError(
+            f"URL scheme '{parsed.scheme}' is not allowed. "
+            f"Only {ALLOWED_SCHEMES} are permitted."
+        )
+
+
+def _sanitize_filename(filename):
+    """
+    Sanitize a filename by removing potentially dangerous characters.
+
+    Args:
+        filename: The filename to sanitize
+
+    Returns:
+        A safe filename string
+    """
+    # Remove any path separators and null bytes
+    filename = os.path.basename(filename)
+    # Remove characters that are not alphanumeric, dots, hyphens, or underscores
+    filename = re.sub(r'[^\w.\-]', '_', filename)
+    # Prevent hidden files
+    filename = filename.lstrip('.')
+    return filename if filename else 'download'
 
 
 class ImageDownloader:
@@ -58,8 +100,12 @@ class ImageDownloader:
         self.logger.info(f"Fetching images from: {url}")
         
         try:
+            _validate_url(url)
             response = self.session.get(url, timeout=self.timeout)
             response.raise_for_status()
+        except ValueError as e:
+            self.logger.error(f"Invalid URL: {e}")
+            return []
         except requests.RequestException as e:
             self.logger.error(f"Failed to fetch URL: {e}")
             return []
@@ -103,6 +149,7 @@ class ImageDownloader:
             Path to the downloaded image or None if failed
         """
         try:
+            _validate_url(img_url)
             response = self.session.get(img_url, timeout=self.timeout, stream=True)
             response.raise_for_status()
             
@@ -112,9 +159,20 @@ class ImageDownloader:
             
             # If no filename, generate one
             if not filename or '.' not in filename:
-                filename = f"image_{hash(img_url) % 10000}.jpg"
+                filename = f"image_{hashlib.md5(img_url.encode()).hexdigest()[:8]}.jpg"
+            
+            # Sanitize the filename
+            filename = _sanitize_filename(filename)
             
             filepath = self.output_dir / filename
+            
+            # Handle filename collisions by appending a counter
+            if filepath.exists():
+                name, ext = os.path.splitext(filename)
+                counter = 1
+                while filepath.exists():
+                    filepath = self.output_dir / f"{name}_{counter}{ext}"
+                    counter += 1
             
             # Save the image
             with open(filepath, 'wb') as f:
@@ -124,6 +182,9 @@ class ImageDownloader:
             self.logger.debug(f"Downloaded: {filename}")
             return str(filepath)
             
+        except ValueError as e:
+            self.logger.error(f"Invalid URL {img_url}: {e}")
+            return None
         except Exception as e:
             self.logger.error(f"Failed to download {img_url}: {e}")
             return None
@@ -158,8 +219,12 @@ class ProductDownloader:
         self.logger.info(f"Extracting products from: {url}")
         
         try:
+            _validate_url(url)
             response = self.session.get(url, timeout=30)
             response.raise_for_status()
+        except ValueError as e:
+            self.logger.error(f"Invalid URL: {e}")
+            return []
         except requests.RequestException as e:
             self.logger.error(f"Failed to fetch URL: {e}")
             return []
