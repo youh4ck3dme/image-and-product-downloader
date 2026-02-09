@@ -8,6 +8,7 @@ A utility for downloading images and extracting product information from website
 import os
 import re
 import sys
+import hashlib
 import argparse
 import logging
 from urllib.parse import urljoin, urlparse
@@ -158,7 +159,7 @@ class ImageDownloader:
             
             # If no filename, generate one
             if not filename or '.' not in filename:
-                filename = f"image_{abs(hash(img_url)) % 10000}.jpg"
+                filename = f"image_{hashlib.md5(img_url.encode()).hexdigest()[:8]}.jpg"
             
             # Sanitize the filename
             filename = _sanitize_filename(filename)
@@ -181,6 +182,9 @@ class ImageDownloader:
             self.logger.debug(f"Downloaded: {filename}")
             return str(filepath)
             
+        except ValueError as e:
+            self.logger.error(f"Invalid URL {img_url}: {e}")
+            return None
         except Exception as e:
             self.logger.error(f"Failed to download {img_url}: {e}")
             return None
