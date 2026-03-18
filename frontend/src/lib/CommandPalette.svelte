@@ -78,7 +78,7 @@
         <li>
           <button
             class="flex w-full flex-col gap-0.5 px-4 py-3 text-left hover:bg-white/10 focus:bg-white/10 focus:outline-none"
-            onclick={() => { open = false; query = ''; }}
+            onclick={toggle}
           >
             <span class="font-medium text-white">{cmd.label}</span>
             <span class="text-sm text-gray-400">{cmd.description}</span>
