@@ -6,6 +6,7 @@ import bs4
 import lxml
 import logging
 
+
 def test_dependencies():
     print("Testing Python version...")
     print(f"Python version: {sys.version}")
@@ -37,6 +38,7 @@ def test_dependencies():
     except Exception as e:
         print(f"\nError during testing: {str(e)}")
         return False
+
 
 if __name__ == "__main__":
     test_dependencies()

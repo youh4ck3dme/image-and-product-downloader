@@ -7,7 +7,6 @@ A utility for downloading images and extracting product information from website
 
 import os
 import re
-import sys
 import hashlib
 import argparse
 import logging
