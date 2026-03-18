@@ -5,7 +5,7 @@ Example usage of the Image and Product Downloader.
 This script demonstrates how to use the downloader library.
 """
 
-from downloader import ImageDownloader, ProductDownloader
+from downloader import ProductDownloader
 
 
 def example_image_download():
@@ -14,7 +14,7 @@ def example_image_download():
     print("-" * 50)
     
     # Initialize the downloader
-    downloader = ImageDownloader(output_dir="downloads/images")
+    # downloader = ImageDownloader(output_dir="downloads/images")
     
     # Example URL (replace with actual URL when using)
     url = "https://example.com/products"
@@ -34,7 +34,7 @@ def example_product_extraction():
     print("-" * 50)
     
     # Initialize the product downloader
-    product_downloader = ProductDownloader()
+    # product_downloader = ProductDownloader()
     
     # Example URL (replace with actual URL when using)
     url = "https://example.com/products"
@@ -63,8 +63,8 @@ def example_combined():
     print()
     
     # Initialize both downloaders
-    image_downloader = ImageDownloader(output_dir="downloads/combined")
-    product_downloader = ProductDownloader()
+    # image_downloader = ImageDownloader(output_dir="downloads/combined")
+    # product_downloader = ProductDownloader()
     
     # Download images and extract product info
     # images = image_downloader.download_images(url, max_images=5)

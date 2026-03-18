@@ -3,10 +3,7 @@
 Test suite for the image and product downloader.
 """
 
-import os
 import tempfile
-import shutil
-from pathlib import Path
 
 from downloader import ImageDownloader, ProductDownloader, _validate_url, _sanitize_filename
 
@@ -16,10 +13,7 @@ def test_image_downloader_init():
     print("Testing ImageDownloader initialization...")
     
     with tempfile.TemporaryDirectory() as temp_dir:
-        downloader = ImageDownloader(output_dir=temp_dir)
-        
-        # Check output directory was created
-        assert Path(temp_dir).exists()
+        ImageDownloader(output_dir=temp_dir)
         print("✓ ImageDownloader initialization working")
         return True
 
